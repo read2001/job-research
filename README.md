@@ -1,0 +1,108 @@
+# Job Research · 招聘公司调研归档
+
+一个 [Claude Code](https://claude.com/product/cli) 技能：遇到一家招聘公司，自动联网挖出招聘简章不会写的真实情况（待遇水分、加班、裁员、员工吐槽），结合你自己的画像做匹配度分析，并归档成可复用的求职材料。
+
+适合**国内求职**场景——尤其是国企/央企/研究院这类信息不透明、待遇结构复杂（编制、劳务派遣、户口、年终占比）的单位。
+
+> 这个技能会先帮你建立「候选人画像」（简历 + 求职偏好 + 经历访谈），之后每次调研直接复用，不用重复介绍自己。
+
+---
+
+## 它解决什么问题
+
+招聘广告都是好话。你真正需要知道的是另一面：
+
+- 纸面总包 vs 实际到手，年终占多少、能不能发出来
+- 是正式编制还是劳务派遣 / 外包
+- 业务线在扩张还是收缩，有没有裁员、降薪
+- 在职/离职员工真实评价（加班、管理、培养体系）
+
+这个技能把这些挖出来，结合你的背景给出**「投不投」的明确建议**，而不是只罗列信息。
+
+## 功能
+
+- **自带画像**：首次使用若没有画像，引导你建立简历/求职偏好/经历访谈；之后直接调研。`/job-research profile` 可随时重建。
+- **联网深挖**：3-4 轮搜索 + 全文深读，主动找负面、找近一年信息。
+- **匹配度分析**：把公司真实情况和你的专业、方向、城市/薪资期望交叉分析。
+- **一键归档**：在 `resume/jobs/<公司全称>/` 下生成招聘原文、分析与决策、按招聘要求命名的简历副本。
+
+## 前置条件
+
+1. **Claude Code** CLI 或桌面端
+2. 两个 MCP 服务（技能默认调用它们，搜索/网页读取质量更好）：
+   - `web-search-prime`（`web_search_prime` 工具）
+   - `web-reader`（`webReader` 工具）
+
+   如果你没配这两个 MCP，可以改 `SKILL.md` 里对应的工具名，换成 Claude Code 内置的 `WebSearch` / `WebFetch` 也能跑，只是质量略低。
+
+## 安装
+
+这是**独立 skill 仓库**——仓库根目录就是技能文件夹本身。
+
+**作为个人技能（所有项目可用）**，克隆进 Claude 的 skills 目录：
+
+```bash
+# macOS / Linux
+git clone https://github.com/read2001/job-research.git ~/.claude/skills/job-research
+
+# Windows (Git Bash)
+git clone https://github.com/read2001/job-research.git ~/.claude/skills/job-research
+# 或 PowerShell: git clone https://github.com/read2001/job-research.git "$HOME/.claude/skills/job-research"
+```
+
+**作为项目技能**，克隆进项目的 `.claude/skills/`：
+
+```bash
+git clone https://github.com/read2001/job-research.git .claude/skills/job-research
+```
+
+## 使用
+
+```
+/job-research <公司名或招聘信息>
+```
+
+招聘信息可以是公司名、JD 文字、招聘海报 OCR 文字，都行。
+
+第一次跑会让你建立画像（提供简历 → 说一下求职偏好 → 经历访谈），之后直接调研。
+
+**单独更新画像**（不调研）：
+
+```
+/job-research profile
+```
+
+## 输出结构
+
+技能在你的工作目录维护一个 `resume/` 目录（**个人数据，不入库**，已被 `.gitignore` 忽略）：
+
+```
+resume/
+├── meta/                          # 你的画像（首次建立，之后复用）
+│   ├── profile.md                 # 经历画像（访谈整理）
+│   ├── preferences.md             # 求职偏好
+│   └── resume/                    # 简历原件
+└── jobs/                          # 每家公司一个目录
+    └── <公司全称>/
+        ├── 招聘信息原文.md
+        ├── 分析与决策.md          # 完整分析 + 投递建议 + 信息来源
+        └── <姓名>+<学校>+<专业>+<学历>.pdf   # 按招聘要求命名的简历副本
+```
+
+## 工作流程
+
+1. **画像检查** → 没有画像就先建（简历/偏好/访谈），有就跳过
+2. **快速预筛** → 方向明显不沾边先提醒，省搜索成本
+3. **确认公司身份** → 分清集团/子公司/研究院、全称/简称
+4. **联网搜索 3-4 轮** → 基本信息待遇 → 员工评价 → 负面信息 → 针对性深挖
+5. **深读关键页面** → 不只看摘要
+6. **综合分析** → 真实情况 + 匹配度 + 投递建议
+7. **归档** → 三件套 + 简历副本
+
+## 致谢
+
+画像（简历 + 求职偏好 + 经历访谈）的设计参考了 [Proficiently](https://github.com/proficientlyjobs/proficiently-claude-skills) 的 setup 技能，特此致谢。本技能把画像能力合并进了调研流程，并针对国内求职场景重写了搜索与分析逻辑。
+
+## License
+
+[MIT](./LICENSE)
