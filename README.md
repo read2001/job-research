@@ -29,11 +29,7 @@
 ## 前置条件
 
 1. **Claude Code** CLI 或桌面端
-2. 两个 MCP 服务（技能默认调用它们，搜索/网页读取质量更好）：
-   - `web-search-prime`（`web_search_prime` 工具）
-   - `web-reader`（`webReader` 工具）
-
-   如果你没配这两个 MCP，可以改 `SKILL.md` 里对应的工具名，换成 Claude Code 内置的 `WebSearch` / `WebFetch` 也能跑，只是质量略低。
+2. **联网搜索**：技能要联网搜索公司信息、深读网页。你的 Claude Code 能联网搜索就能用。
 
 ## 安装
 
